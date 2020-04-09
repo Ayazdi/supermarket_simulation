@@ -9,6 +9,8 @@ class PorbabilityClass():
         self.aisle = aisle
 
     def read_data(self):
+        """Read and concatenation of the csv files"""
+
         df = pd.read_csv('friday.csv', delimiter=";")
         for csv in os.listdir():
             if csv[-3:] == "csv":
@@ -26,6 +28,10 @@ class PorbabilityClass():
         return df
 
     def porb_matrix_by_day(self):
+        """
+        Probability matrix of aisles pattern and probability array
+        of the first aisle of each day of the week or all days toghether
+        """
         df = self.add_datetime_columns()
         if self.weekday == 'all_days':
             df_1 = pd.DataFrame(df.sort_values(['customer_no', 'timestamp']).groupby(['weekday', 'customer_no', 'location'])['timestamp'].min())
@@ -49,6 +55,10 @@ class PorbabilityClass():
         return first_loc, prob_mat
 
     def sector_time_prob(self):
+        """
+        Probability array of the time spent at each aisle on each day of the week
+        or all days of the week
+        """
 
         df = self.add_datetime_columns()
         if self.weekday == 'all_days':
