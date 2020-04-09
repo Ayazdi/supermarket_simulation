@@ -1,4 +1,5 @@
 from supermarket_sim import SupermarketSim, Customer
+import numpy as np
 import cv2
 
 
@@ -6,7 +7,7 @@ import cv2
 if __name__=='__main__':
 
     customers = []
-    for _ in range(2):
+    for _ in range(5):
         c = Customer(weekday='all_days', aisle='fruit', image=cv2.imread('customer_2.png'))
         c.pattern()
         c.money_spent()
@@ -19,20 +20,26 @@ if __name__=='__main__':
     sim = SupermarketSim(customers)
     img = cv2.imread('market.png')
 
+    income = []
     while True:
-        frame = img.copy()
 
+        frame = img.copy()
+        layer = np.zeros((sim.frame.shape[0], sim.frame.shape[1], 3))
         sim.draw()
         sim.run_one_iteration()
+
         for customer in sim.customers:
             if customer.location[0] == customer.target_position[0] and customer.location[1] == customer.target_position[1]:
+                income.append(customer.payment)
                 sim.customers.remove(customer)
 
+        cv2.putText(layer, f'{sum(income)}', (10, 500), cv2.FONT_HERSHEY_SIMPLEX, 1, (1, 1, 1), 2)
 
-
-
+        cnd = layer[:] > 0
+        sim.frame[cnd] = layer[cnd]
 
         cv2.imshow('frame', sim.frame)
+
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
