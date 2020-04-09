@@ -129,3 +129,19 @@ class Customer(PorbabilityClass):
             self.shopping_hist.append(next_step)
             if next_step == 'checkout':
                 break
+class SupermarketSim(Customer):
+
+    def __init__(self, background, customers):
+        self.background = background
+        self.customers = customers
+        self.frame = background
+
+    def draw(self):
+        self.frame = self.background.copy()
+        for customer in customers:
+            y, x = customer.location
+            self.frame[y:y+customer.h, x:x+customer.w] = customer.image
+
+    def run_one_iteration(self):
+        for customer in customers:
+            customer.move()
