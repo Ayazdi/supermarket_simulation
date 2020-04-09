@@ -1,10 +1,6 @@
-import pandas as pd
-import os
-import matplotlib.pyplot as plt
 import numpy as np
 import random
 from random import randint
-import warnings
 import cv2
 from probability_matrix_and_array import PorbabilityClass
 
@@ -15,19 +11,19 @@ class Customer(PorbabilityClass):
     def __init__(self, aisle, weekday, image):
         PorbabilityClass.__init__(self, aisle, weekday)
         self.image = image
-        self.location = np.array((randint(580, 620), randint(700, 780)))
+        self.location = np.array((randint(600, 610), randint(750, 820)))
         self.h = self.image.shape[0]
         self.w = self.image.shape[1]
         self.payment = 0
         self.shopping_hist = []
-        self.aisles_locs = {'fruit': (180, 750), 'spices': (150, 570), 'drinks': (280, 140), 'dairy': (130, 335), 'checkout': (600, 220)}
+        self.aisles_locs = {'fruit': (180, 750), 'spices': (150, 570), 'drinks': (280, 140), 'dairy': (130, 335), 'checkout': (600, 80)}
 
     def aisle_pattern(self):
-        #first time your customer arrives, place her in the 'first_aisle - every aisle except checkout'
+        # first time your customer arrives, place her in the 'first_aisle - every aisle except checkout'
         initial_state, prob_mat = self.porb_matrix_by_day()
         aisle = random.choices(initial_state.index, initial_state)[0]
         yield aisle
-        #for every other time until she checkouts, place her wherever the aisle_activity prob matrix places her
+        # for every other time until she checkouts, place her wherever the aisle_activity prob matrix places her
         while True:
             aisle = random.choices(prob_mat.index, prob_mat.loc[aisle])[0]
             yield aisle
