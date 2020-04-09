@@ -12,6 +12,10 @@ if __name__=='__main__':
         c.money_spent()
         customers.append(c)
 
+    for customer in customers:
+        print(customer.shopping_hist)
+        print(customer.payment)
+
     sim = SupermarketSim(customers)
     img = cv2.imread('market.png')
 
