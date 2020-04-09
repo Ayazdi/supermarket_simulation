@@ -39,9 +39,9 @@ class Customer(PorbabilityClass):
 
 #         for i in range(len(self.shopping_hist)):
         y, x = self.location
-
         self.target_position = np.array(self.aisles_locs[self.shopping_hist[0]])
         ty, tx = self.target_position
+
         # go up
         if x != tx and y != 60:
             trajectory = 60 - y
@@ -66,32 +66,6 @@ class Customer(PorbabilityClass):
             if trajectory < 0:
                 self.location[0] -= 1
 
-        if self.location[0] == self.target_position[0] and self.location[1] == self.target_position[1]:
-            print(self.target_position)
-            self.target_position = np.array(self.aisles_locs[self.shopping_hist[1]])
-            print(self.target_position)
-            if x != tx and y != 60:
-                trajectory = 60 - y
-                if trajectory > 0:
-                    self.location[0] += 1
-                elif trajectory < 0:
-                    self.location[0] -= 1
-
-            # go right or left
-            if x != tx and y == 60:
-                trajectory = tx - x
-                if trajectory > 0:
-                    self.location[1] += 1
-                if trajectory < 0:
-                    self.location[1] -= 1
-
-            # go down
-            if x == tx:
-                trajectory = ty - y
-                if trajectory > 0:
-                    self.location[0] += 1
-                if trajectory < 0:
-                    self.location[0] -= 1
 
     def money_spent(self):
         for section in self.shopping_hist:
@@ -129,19 +103,21 @@ class Customer(PorbabilityClass):
             self.shopping_hist.append(next_step)
             if next_step == 'checkout':
                 break
+
+
 class SupermarketSim(Customer):
 
-    def __init__(self, background, customers):
+    def __init__(self, customers, background=cv2.imread('market.png')):
         self.background = background
         self.customers = customers
         self.frame = background
 
     def draw(self):
         self.frame = self.background.copy()
-        for customer in customers:
+        for customer in self.customers:
             y, x = customer.location
             self.frame[y:y+customer.h, x:x+customer.w] = customer.image
 
     def run_one_iteration(self):
-        for customer in customers:
+        for customer in self.customers:
             customer.move()
