@@ -20,6 +20,7 @@ class Customer(PorbabilityClass):
         self.w = self.image.shape[1]
         self.payment = 0
         self.shopping_hist = []
+        self.aisles_locs = {'fruit': (180, 750), 'spices': (150, 570), 'drinks': (280, 140), 'dairy': (130, 335), 'checkout': (600, 220)}
 
     def aisle_pattern(self):
         #first time your customer arrives, place her in the 'first_aisle - every aisle except checkout'
@@ -31,15 +32,19 @@ class Customer(PorbabilityClass):
             aisle = random.choices(prob_mat.index, prob_mat.loc[aisle])[0]
             yield aisle
 
+    def det_target(self):
+        if self.location[0] == self.target_position[0] and self.location[1] == self.target_position[1]:
+            if self.target_position[0] != 600 and self.target_position[1] != 220:
+                self.target_position = np.array(self.aisles_locs[self.target_list[1]])
+                self.target_list.pop(1)
+
     def move(self):
         '''
         The method move lets the customers move in the supermarket
         '''
-        self.aisles_locs = {'fruit': (180, 750), 'spices': (150, 570), 'drinks': (280, 140), 'dairy': (130, 335), 'checkout': (600, 220)}
 
 #         for i in range(len(self.shopping_hist)):
         y, x = self.location
-        self.target_position = np.array(self.aisles_locs[self.shopping_hist[0]])
         ty, tx = self.target_position
 
         # go up
@@ -103,7 +108,8 @@ class Customer(PorbabilityClass):
             self.shopping_hist.append(next_step)
             if next_step == 'checkout':
                 break
-
+        self.target_list = self.shopping_hist.copy()
+        self.target_position = np.array(self.aisles_locs[self.shopping_hist[0]])
 
 class SupermarketSim(Customer):
 
@@ -121,3 +127,4 @@ class SupermarketSim(Customer):
     def run_one_iteration(self):
         for customer in self.customers:
             customer.move()
+            customer.det_target()

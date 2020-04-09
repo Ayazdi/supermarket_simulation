@@ -24,6 +24,12 @@ if __name__=='__main__':
 
         sim.draw()
         sim.run_one_iteration()
+        for customer in sim.customers:
+            if customer.location[0] == customer.target_position[0] and customer.location[1] == customer.target_position[1]:
+                sim.customers.remove(customer)
+
+
+
 
 
         cv2.imshow('frame', sim.frame)

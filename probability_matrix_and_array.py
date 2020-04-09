@@ -38,7 +38,7 @@ class PorbabilityClass():
             df_1 = df_1.sort_values(["customer_no", 'timestamp'])
             df_1 = pd.DataFrame(df_1.index.get_level_values(1), df_1['timestamp']).reset_index()
         df_1['next_location'] = df_1['location'].shift(-1)
-        df_1['next_location'][df_1['location']=='checkout']= 'checkout'
+        df_1['next_location'][df_1['location'] == 'checkout'] = 'checkout'
         df_1['initial'] = df_1['location'].shift(-1)
 
         first_loc = df_1['initial'][df_1['location'] == 'checkout']
@@ -48,10 +48,8 @@ class PorbabilityClass():
 
         return first_loc, prob_mat
 
-
-
-
     def sector_time_prob(self):
+
         df = self.add_datetime_columns()
         if self.weekday == 'all_days':
             df_1 = pd.DataFrame(df.sort_values(['customer_no', 'timestamp']).groupby(['weekday','customer_no','location'])['timestamp'].min())
