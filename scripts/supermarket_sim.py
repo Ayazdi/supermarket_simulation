@@ -1,22 +1,40 @@
+""" Supermarket simulation
+This module reads the probability tables and arrays processed by
+probability_matrix_and_array.py to simulate customer behaviour.
+"""
+
 import numpy as np
 import random
 from random import randint
 import cv2
 from probability_matrix_and_array import PorbabilityClass
+from config import PATH
 
 
 class Customer(PorbabilityClass):
     """ This is a customer class """
 
-    def __init__(self, aisle, weekday, image):
+    def __init__(self, weekday, aisle='fruit'):
+        """
+        Parameters
+        ----------
+        aisle : str
+            name of the aisle in the supermarket
+        weekday : str
+            either a day of the week from Monday to Friday or all_days
+        """
         PorbabilityClass.__init__(self, aisle, weekday)
-        self.image = image
-        self.location = np.array((randint(600, 620), randint(730, 790)))
-        self.h = self.image.shape[0]
-        self.w = self.image.shape[1]
-        self.payment = 0
-        self.shopping_hist = []
-        self.aisles_locs = {'fruit': (180, 750), 'spices': (150, 570), 'drinks': (280, 140), 'dairy': (130, 335), 'checkout': (600, 80)}
+        image = np.zeros((10, 10, 3), dtype=np.uint8)
+        image[:, :] = 0
+        self.image = image  # a black square representing the customer's image
+        self.location = np.array((randint(600, 660), randint(750, 880)))  # entrace location in the supermarket
+        self.h = self.image.shape[0]  # hight of image
+        self.w = self.image.shape[1]  # weight of image
+        self.payment = 0  # the amount of money the custmer has spent
+        self.shopping_hist = []  # a list of the aisles the custmomer has gone through
+        self.aisles_locs = {'fruit': (180, 750), 'spices': (150, 570), 'drinks': (280, 140), 'dairy': (130, 335), 'checkout': (600, 80)}  # coordinates of the aisles
+        self.revenue_min = {'fruit': 4, 'spices': 3, 'drinks': 6, 'dairy': 5, 'checkout': 0}  # revenue per minutes of each aisle
+        self.money_per_aisle = {'fruit': 0, 'spices': 0, 'drinks': 0, 'dairy': 0, 'checkout': 0}
 
     def aisle_pattern(self):
         # first time your customer arrives, place her in the 'first_aisle - every aisle except checkout'
@@ -29,6 +47,10 @@ class Customer(PorbabilityClass):
             yield aisle
 
     def det_target(self):
+        """
+        Set the target location as the start location after the customer reaches
+        to the aisle and has to go to the next aisle
+        """
         if self.location[0] == self.target_position[0] and self.location[1] == self.target_position[1]:
             if self.target_position[0] != 600 and self.target_position[1] != 220:
                 self.target_position = np.array(self.aisles_locs[self.target_list[1]])
@@ -67,35 +89,22 @@ class Customer(PorbabilityClass):
             if trajectory < 0:
                 self.location[0] -= 1
 
+    def money_spent(self):
+        """
+        Calculates the amount of money customers spent at each aisle
+        based on the the time they spent at it.
 
-    def money_spent(self):  # make this code better Amirali!!!
-        for section in self.shopping_hist:
-            if section == 'dairy':
-                self.aisle = 'dairy'
-                time_prob = self.sector_time_prob()
-                time_spent = random.choices(time_prob.index, time_prob)[0]
-                pay = 5 * time_spent
-                self.payment = self.payment + pay
-            if section == 'fruit':
-                self.aisle = 'fruit'
-                time_prob = self.sector_time_prob()
-                time_spent = random.choices(time_prob.index, time_prob)[0]
-                pay = 4 * time_spent
-                self.payment = self.payment + pay
-            if section == 'spices':
-                self.aisle = 'spices'
-                time_prob = self.sector_time_prob()
-                time_spent = random.choices(time_prob.index, time_prob)[0]
-                pay = 3 * time_spent
-                self.payment = self.payment + pay
-            if section == 'drinks':
-                self.aisle = 'drinks'
-                time_prob = self.sector_time_prob()
-                time_spent = random.choices(time_prob.index, time_prob)[0]
-                pay = 6 * time_spent
-                self.payment = self.payment + pay
-            else:
-                self.payment = self.payment
+        Takes the sector_time_prob  array to simulate the minutes spent and mutiply it by the
+        revenue per minutes provided before in the revenue_min dictionary
+        """
+        for aisle in self.shopping_hist:
+            self.aisle = aisle
+            time_prob = self.sector_time_prob()
+            time_spent = random.choices(time_prob.index, time_prob)[0]
+            pay = self.revenue_min[aisle] * time_spent
+            self.payment = self.payment + pay
+            self.money_per_aisle[aisle] = pay
+
 
     def pattern(self):
         pattern_func = self.aisle_pattern()
@@ -109,7 +118,7 @@ class Customer(PorbabilityClass):
 
 class SupermarketSim(Customer):
 
-    def __init__(self, customers, background=cv2.imread('market.png')):
+    def __init__(self, customers, background=cv2.imread(f'{PATH}market.png')):
         self.background = background
         self.customers = customers
         self.frame = background
