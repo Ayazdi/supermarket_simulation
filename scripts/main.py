@@ -9,7 +9,7 @@ if __name__=='__main__':
 
     customers = []
     for _ in range(5):
-        c = Customer(weekday='Fri', aisle='fruit', image=cv2.imread(f'{PATH}customer_2.png'))
+        c = Customer(weekday='Friday', image=cv2.imread(f'{PATH}customer_2.png'))
         c.pattern()
         c.money_spent()
         customers.append(c)
