@@ -1,3 +1,8 @@
+""" probability Matrix and array
+This module reads the csv data and apply feature engineering in order to obtain
+probablilty matrix and arrays to define customers pattern in the supermarket
+and the time they spend at each aisle.
+"""
 import pandas as pd
 import os
 from config import PATH
@@ -6,6 +11,14 @@ from config import PATH
 class PorbabilityClass():
 
     def __init__(self, aisle, weekday):
+        """
+        Parameters
+        ----------
+        aisle : str
+            name of the aisle in the supermarket
+        weekday : str
+                either a day of the week from Monday to Friday or all_days
+        """
         self.weekday = weekday
         self.aisle = aisle
 
@@ -24,14 +37,16 @@ class PorbabilityClass():
         df["timestamp"] = pd.to_datetime(df["timestamp"])
         df['hour'] = df['timestamp'].dt.hour
         df['weekday'] = df['timestamp'].dt.weekday
-        df['weekday'].replace({0: 'Mon', 1: 'Tues', 2: 'Wednes', 3: 'Thurs', 4: 'Fri'}, inplace=True)
+        df['weekday'].replace({0: 'Monday', 1: 'Tuesday', 2: 'Wednesday', 3: 'Thursday', 4: 'Friday'}, inplace=True)
 
         return df
 
     def porb_matrix_by_day(self):
         """
-        Probability matrix of aisles pattern and probability array
+        Probability matrix of the aisles and probability array
         of the first aisle of each day of the week or all days toghether
+
+        returns probability array of the first aisle and the probability matrix
         """
         df = self.add_datetime_columns()
         if self.weekday == 'all_days':
@@ -57,8 +72,8 @@ class PorbabilityClass():
 
     def sector_time_prob(self):
         """
-        Probability array of the time spent at each aisle on each day of the week
-        or all days of the week
+        Probability array of the time spent at each aisle on each day of the
+        week or all days of the week
         """
 
         df = self.add_datetime_columns()
