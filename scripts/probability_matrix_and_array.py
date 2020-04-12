@@ -5,7 +5,6 @@ and the time they spend at each aisle.
 """
 import pandas as pd
 import os
-from config import PATH
 
 
 class PorbabilityClass():
@@ -25,7 +24,7 @@ class PorbabilityClass():
     def read_data(self):
         """Read and concatenation of the csv files"""
 
-        df = pd.read_csv(f'{PATH}friday.csv', delimiter=";")
+        df = pd.read_csv('..\\data\\friday.csv', delimiter=";")
         for csv in os.listdir():
             if csv[-3:] == "csv":
                 df_day = pd.read_csv(f'{csv}', delimiter=";")
