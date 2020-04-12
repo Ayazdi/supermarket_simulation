@@ -12,7 +12,6 @@ based on they time they spend at the aisle.
 from supermarket_sim import SupermarketSim, Customer
 import numpy as np
 import cv2
-from config import PATH
 
 
 if __name__ == '__main__':

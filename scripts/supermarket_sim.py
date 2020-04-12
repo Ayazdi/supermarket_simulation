@@ -41,7 +41,7 @@ class Customer(PorbabilityClass):
         money_per_aisle: dict
             money spent at each aisle by the customer
         """
-        PorbabilityClass.__init__(self, aisle, weekday)
+        super().__init__(aisle, weekday)
         image = np.zeros((10, 10, 3), dtype=np.uint8)
         image[:, :] = 0
         self.image = image
@@ -146,19 +146,41 @@ class Customer(PorbabilityClass):
         self.target_position = np.array(self.aisles_locs[self.shopping_hist[0]])
 
 class SupermarketSim(Customer):
+    """
+    The SupermarketSim class is a child class of Customer class and it
+    visualizes the movement of the customers in the supermarket based on their
+    shopping_hist from Customer class
+    """
 
     def __init__(self, customers, background=cv2.imread('..\\data\\market.png')):
+        """
+        Parameters
+        ----------
+        customers: list
+            list of customers simulated by Customer class with defined moement pattern and payment
+        background: png
+            supermarket image
+        """
+        image: np.array
         self.background = background
         self.customers = customers
         self.frame = background
 
     def draw(self):
+        """
+        Places the customers symbol image on the supermarket image based on they
+        customer.location coordinates and the size of the symbol.
+        """
         self.frame = self.background.copy()
         for customer in self.customers:
             y, x = customer.location
             self.frame[y:y+customer.h, x:x+customer.w] = customer.image
 
     def run_one_iteration(self):
+        """
+        Moves each customer from starting position and the target position using
+        move and det_target methods from Customer class.
+        """
         for customer in self.customers:
             customer.move()
             customer.det_target()

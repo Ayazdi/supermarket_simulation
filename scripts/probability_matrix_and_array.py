@@ -23,11 +23,11 @@ class PorbabilityClass():
 
     def read_data(self):
         """Read and concatenation of the csv files"""
-
-        df = pd.read_csv('..\\data\\friday.csv', delimiter=";")
-        for csv in os.listdir():
+        PATH = "..\\data\\"
+        df = pd.DataFrame()
+        for csv in os.listdir(PATH):
             if csv[-3:] == "csv":
-                df_day = pd.read_csv(f'{csv}', delimiter=";")
+                df_day = pd.read_csv(f'{PATH}{csv}', delimiter=";")
                 df = pd.concat([df, df_day], sort=True)
         return df
 
