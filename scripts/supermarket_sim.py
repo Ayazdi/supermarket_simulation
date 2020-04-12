@@ -1,6 +1,6 @@
 """ Supermarket simulation
 This module reads the probability tables and arrays processed by
-probability_matrix_and_array.py to simulate customer behaviour.
+probability_matrix_and_array.py to simulate customer behavior.
 """
 
 import numpy as np
@@ -8,36 +8,59 @@ import random
 from random import randint
 import cv2
 from probability_matrix_and_array import PorbabilityClass
-from config import PATH
 
 
 class Customer(PorbabilityClass):
-    """ This is a customer class """
+    """
+    This is the Customer class inheriting ProbabilityClass as the parent class to
+    use probability matrix and arrays for simulating customers.
+    """
 
     def __init__(self, weekday, aisle='fruit'):
         """
         Parameters
         ----------
-        aisle : str
+        aisle: str
             name of the aisle in the supermarket
-        weekday : str
+        weekday: str
             either a day of the week from Monday to Friday or all_days
+        image: np.array
+            a black square representing the customer's image
+        location: np.array
+            entrace location in the supermarket and the starting position of the customers
+        h: int
+            hight of image
+        w: int
+            width of image
+        payment: float
+            the amount of money the custmer has spent
+        aisles_locs: dict
+            coordinates of the aisles
+        revenue_min: dict
+            revenue per minutes of each aisle
+        money_per_aisle: dict
+            money spent at each aisle by the customer
         """
         PorbabilityClass.__init__(self, aisle, weekday)
         image = np.zeros((10, 10, 3), dtype=np.uint8)
         image[:, :] = 0
-        self.image = image  # a black square representing the customer's image
-        self.location = np.array((randint(600, 660), randint(750, 880)))  # entrace location in the supermarket
-        self.h = self.image.shape[0]  # hight of image
-        self.w = self.image.shape[1]  # weight of image
-        self.payment = 0  # the amount of money the custmer has spent
-        self.shopping_hist = []  # a list of the aisles the custmomer has gone through
-        self.aisles_locs = {'fruit': (180, 750), 'spices': (150, 570), 'drinks': (280, 140), 'dairy': (130, 335), 'checkout': (600, 80)}  # coordinates of the aisles
-        self.revenue_min = {'fruit': 4, 'spices': 3, 'drinks': 6, 'dairy': 5, 'checkout': 0}  # revenue per minutes of each aisle
+        self.image = image
+        self.location = np.array((randint(600, 660), randint(750, 880)))
+        self.h = self.image.shape[0]
+        self.w = self.image.shape[1]
+        self.payment = 0
+        self.shopping_hist = []
+        self.aisles_locs = {'fruit': (180, 750), 'spices': (150, 570), 'drinks': (280, 140), 'dairy': (130, 335), 'checkout': (600, 80)}
+        self.revenue_min = {'fruit': 4, 'spices': 3, 'drinks': 6, 'dairy': 5, 'checkout': 0}
         self.money_per_aisle = {'fruit': 0, 'spices': 0, 'drinks': 0, 'dairy': 0, 'checkout': 0}
 
     def aisle_pattern(self):
-        # first time your customer arrives, place her in the 'first_aisle - every aisle except checkout'
+        """
+        Generates the first aisle the customer visits and the following ones
+        using first aisle probability array and probability matrix (Markov chain)
+        from porb_matrix_by_day method.
+        """
+        # place the customer in the 'first_aisle - every aisle except checkout'
         initial_state, prob_mat = self.porb_matrix_by_day()
         aisle = random.choices(initial_state.index, initial_state)[0]
         yield aisle
@@ -58,10 +81,10 @@ class Customer(PorbabilityClass):
 
     def move(self):
         '''
-        The method move lets the customers move in the supermarket
+        This method moves the customers in the supermarket
+        based on the initial location and the target_position.
         '''
 
-#         for i in range(len(self.shopping_hist)):
         y, x = self.location
         ty, tx = self.target_position
 
@@ -107,6 +130,12 @@ class Customer(PorbabilityClass):
 
 
     def pattern(self):
+        """
+        Simulate the shopping pattern by using the aisle_pattern method.
+
+        Appending the name of the each visited aisle to the shopping history
+        list and finally stops the pattern when it reaches to the checkout section.
+        """
         pattern_func = self.aisle_pattern()
         while True:
             next_step = next(pattern_func)
@@ -118,7 +147,7 @@ class Customer(PorbabilityClass):
 
 class SupermarketSim(Customer):
 
-    def __init__(self, customers, background=cv2.imread(f'{PATH}market.png')):
+    def __init__(self, customers, background=cv2.imread('..\\data\\market.png')):
         self.background = background
         self.customers = customers
         self.frame = background
