@@ -129,5 +129,7 @@ dmypy.json
 .pyre/
 
 # confing file
-
 config.py
+
+# debug
+Debug Notebook.ipynb
