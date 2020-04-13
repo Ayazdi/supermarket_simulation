@@ -50,7 +50,13 @@ class Customer(PorbabilityClass):
         self.w = self.image.shape[1]
         self.payment = 0
         self.shopping_hist = []
-        self.aisles_locs = {'fruit': (180, 750), 'spices': (150, 570), 'drinks': (280, 140), 'dairy': (130, 335), 'checkout': (600, 80)}
+        self.aisles_locs = {
+                            'fruit': np.array((randint(160, 400), randint(760, 790))),
+                            'spices': np.array((randint(160, 400), randint(570, 630))),
+                            'drinks': np.array((randint(160, 400), randint(140, 180))),
+                            'dairy': np.array((randint(160, 400), randint(335, 360))),
+                            'checkout': (600, randint(70, 100))
+                            }
         self.revenue_min = {'fruit': 4, 'spices': 3, 'drinks': 6, 'dairy': 5, 'checkout': 0}
         self.money_per_aisle = {'fruit': 0, 'spices': 0, 'drinks': 0, 'dairy': 0, 'checkout': 0}
 
@@ -87,17 +93,17 @@ class Customer(PorbabilityClass):
 
         y, x = self.location
         ty, tx = self.target_position
-
+        edge = 60
         # go up
-        if x != tx and y != 60:
-            trajectory = 60 - y
+        if x != tx and y != edge:
+            trajectory = edge - y
             if trajectory > 0:
                 self.location[0] += 1
             elif trajectory < 0:
                 self.location[0] -= 1
 
         # go right or left
-        if x != tx and y == 60:
+        if x != tx and y == edge:
             trajectory = tx - x
             if trajectory > 0:
                 self.location[1] += 1
