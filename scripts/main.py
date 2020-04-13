@@ -37,8 +37,13 @@ if __name__ == '__main__':
     SIM = SupermarketSim(CUSTOMERS)
     IMG = cv2.imread('..\\data\\market.png')
 
-    AISLE_INCOME = {'fruit': 0, 'spices': 0, 'drinks': 0, 'dairy': 0}
-    INCOME = []
+    AISLE_INCOME = {
+                    'fruit': [0, (780, 130)],
+                    'spices': [0, (560, 130)],
+                    'drinks': [0, (100, 130)],
+                    'dairy': [0, (330, 130)],
+                    'checkout': [0, (480, 650)]
+                    }
     while True:
 
         FRAME = IMG.copy()
@@ -49,23 +54,20 @@ if __name__ == '__main__':
         # calculating the total income of the supermarket based on the simulation
         for CUSTOMER in SIM.customers:
             if CUSTOMER.location[0] == CUSTOMER.target_position[0] and CUSTOMER.location[1] == CUSTOMER.target_position[1]:
-                INCOME.append(CUSTOMER.payment)
+                AISLE_INCOME['checkout'][0] += CUSTOMER.payment
                 SIM.customers.remove(CUSTOMER)
 
         # calculating the total income of each aisle
         for CUSTOMER in SIM.customers:
             for KEY in AISLE_INCOME.keys():
                 if CUSTOMER.location[0] == CUSTOMER.aisles_locs[KEY][0] and CUSTOMER.location[1] == CUSTOMER.aisles_locs[KEY][1]:
-                    AISLE_INCOME[KEY] += CUSTOMER.money_per_aisle[KEY]
+                    AISLE_INCOME[KEY][0] += CUSTOMER.money_per_aisle[KEY]
                     print(AISLE_INCOME)
 
-        # visualizing payed amount at each aisle
-        cv2.putText(LAYER, f"{int(AISLE_INCOME['fruit'])}", (820, 130), cv2.FONT_HERSHEY_SIMPLEX, 1, (1, 1, 1), 2)
-        cv2.putText(LAYER, f"{int(AISLE_INCOME['spices'])}", (580, 130), cv2.FONT_HERSHEY_SIMPLEX, 1, (1, 1, 1), 2)
-        cv2.putText(LAYER, f"{int(AISLE_INCOME['dairy'])}", (330, 130), cv2.FONT_HERSHEY_SIMPLEX, 1, (1, 1, 1), 2)
-        cv2.putText(LAYER, f"{int(AISLE_INCOME['drinks'])}", (100, 130), cv2.FONT_HERSHEY_SIMPLEX, 1, (1, 1, 1), 2)
-        # visualizing the total income
-        cv2.putText(LAYER, f'{int(sum(INCOME))}', (10, 500), cv2.FONT_HERSHEY_SIMPLEX, 1, (1, 1, 1), 2)
+        # visualizing the payed amount at each aisle
+        for AISLE in AISLE_INCOME.keys():
+            cv2.putText(LAYER, f"{int(AISLE_INCOME[AISLE][0])}", AISLE_INCOME[AISLE][1], cv2.FONT_HERSHEY_SIMPLEX, 1, (1, 1, 1), 2)
+
 
         cnd = LAYER[:] > 0
         SIM.frame[cnd] = LAYER[cnd]
