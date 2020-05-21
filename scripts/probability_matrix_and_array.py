@@ -32,6 +32,7 @@ class PorbabilityClass():
         return df
 
     def add_datetime_columns(self):
+        """Add hour and weekday columns to the dataset"""
         df = self.read_data()
         df["timestamp"] = pd.to_datetime(df["timestamp"])
         df['hour'] = df['timestamp'].dt.hour
