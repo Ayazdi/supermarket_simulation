@@ -1,6 +1,7 @@
 # Supermarket Simulation
-![visualization](./visualization.gif)
 This python program simulates and visualizes customer's behavior such as the amount of time and money they spend at each aisle by applying the Markov Chain and Monte-Carlo modeling. The simulation can be based on any day of the week or on the whole weekdays with a given number of customers.
+![visualization](./visualization.gif)
+
 
 ## Usage:
 python main.py
