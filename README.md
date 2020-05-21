@@ -1,5 +1,5 @@
 # Supermarket Simulation
-
+![visualization](./visualization.gif)
 This python program simulates and visualizes customer's behavior such as the amount of time and money they spend at each aisle by applying the Markov Chain and Monte-Carlo modeling. The simulation can be based on any day of the week or on the whole weekdays with a given number of customers.
 
 ## Usage:
@@ -17,10 +17,10 @@ The program starts by asking the user to enter the specific day of the week from
  - Monte-Carlo
 
 ## Scripts:
-- **main**: The main py file to run the program. 
+- **main**: The main py file to run the program.
 
 - **probability_matrix_and_array**: This module reads the CSV data and applies feature engineering in order to obtain
-a probability matrix and arrays to define customer's pattern in the supermarket and the time they spend at each aisle. 
+a probability matrix and arrays to define customer's pattern in the supermarket and the time they spend at each aisle.
 
 - **supermarket_sim**: Includes the Customer class that generates the shopping pattern and payments based on the probability matrix and arrays from PorbabilityClass and SupermarketSim class that accept a list of customers made by Customers class and apply the movement in the shop for visualization.
 
