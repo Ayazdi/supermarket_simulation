@@ -11,11 +11,12 @@ The program starts by asking the user to enter the specific day of the week from
 
 ## Used tech and model:
  - Python
- - cv2
+ - OpenCV
  - Numpy
  - Pandas
  - Markov Chain
  - Monte-Carlo
+ - OOP
 
 ## Scripts:
 - **main**: The main py file to run the program.
