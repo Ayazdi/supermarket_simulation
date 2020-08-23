@@ -6,7 +6,7 @@ It accepts two outputs:
 
 A new window will open and a visualization of the simulation will show the
 customers shopping pattern and the amount of money they spend at each section
-based on they time they spend at the aisle.
+based on the time they spend at the aisle.
  """
 
 from supermarket_sim import SupermarketSim, Customer
